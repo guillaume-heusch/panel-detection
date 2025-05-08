@@ -73,7 +73,7 @@ spaces_before_inline_comment = 4
 spaces_indent_inline_array = 4
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/panel_detection"]
+packages = ["src"]
 
 [build-system]
 requires = ["hatchling"]

@@ -1,0 +1,9 @@
+image_filename: "./data/frames/1622-frame0001.jpg"
+plot: True
+model:
+  ckpt_file: "best.ckpt"
+output_dir: "results"
+score_threshold: 0.3
+show_all_predictions: False
+show_result: True
+save_filename: null
