@@ -1,0 +1,65 @@
+site_name: panel-detection
+repo_url: https://github.com/guillaume-heusch/panel-detection
+site_url: https://guillaume-heusch.github.io/panel-detection
+site_description: Code to detect panels with numbers
+site_author: Guillaume Heusch
+edit_uri: edit/main/docs/
+repo_name: guillaume-heusch/panel-detection
+copyright: Maintained by <a href="https://guillaume-heusch.com">guillaume-heusch</a>.
+nav:
+  - Home:
+    - index.md
+    - About: about.md
+  - Source Code API Reference:
+    - api/index.md
+theme:
+  name: material
+  features:
+    - navigation.indexes
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - content.code.copy
+    - content.code.select
+plugins:
+  - search
+  - include-markdown
+  - mkdocstrings:
+      handlers:
+        python:
+          # search packages in the src folder
+          paths: ["src/panel_detection"]
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: True
+            docstring_section_style: spacy
+            merge_init_into_class: True
+  - mkdocs-jupyter:
+      # ignore_h1_titles: true # Ignore using first h1 as title, instead use filename.
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/guillaume-heusch/panel-detection
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/panel-detection
+extra_css:
+  - stylesheets/extra.css
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.blocks.caption
+  - pymdownx.details
+  - pymdownx.highlight:
+      use_pygments: true
+      pygments_lang_class: true
+  - pymdownx.superfences
+  - pymdownx.pathconverter
+  - pymdownx.snippets:
+      base_path: ["."] # Using --8<-- "dir/file.md" is relative to the base_path.
+  - toc:
+      permalink: true

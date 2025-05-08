@@ -1,0 +1,8 @@
+# Exclude the project virtual environment from image builds.
+**/.venv
+# Python realted files.
+**/__pycache__
+**/.pytest_cache
+.ruff_cache
+# MacOS
+.DS_Store
