@@ -11,7 +11,7 @@ from src.engine.compute_metrics import MetricsComputer
 
 class FasterRCNNModule(pl.LightningModule):
     """
-    Class implementing a Faster R-CNN as a PyTorch Lightning module
+    Class implementing a Faster R-CNN as a PyTorch Lightning module.
 
     Attributes
     ----------
@@ -30,7 +30,7 @@ class FasterRCNNModule(pl.LightningModule):
 
     def __init__(self, cfg: DictConfig = None):
         """
-        Init function
+        Init function.
 
         Note that the config is only needed for training.
 
@@ -57,7 +57,12 @@ class FasterRCNNModule(pl.LightningModule):
         self, num_classes: int
     ) -> torchvision.models.detection.fasterrcnn_resnet50_fpn:
         """
-        Returns the model defined the config params
+        Return the model defined in the config params.
+
+        Parameters
+        ----------
+        num_classes: int
+            the number of classes (1 in our case)
 
         """
         model = torchvision.models.detection.fasterrcnn_resnet50_fpn(
@@ -91,9 +96,31 @@ class FasterRCNNModule(pl.LightningModule):
         return model
 
     def forward(self, images, target=None):
+        """
+        Forward images to the model.
+
+        Parameters
+        ----------
+        images: list
+            The images batch
+        target: list
+            The target for the batch
+
+        """
         return self.model(images, target)
 
     def training_step(self, batch, batch_idx):
+        """
+        Perform a training step.
+
+        Parameters
+        ----------
+        batch: Tuple
+            The batch
+        batch_idx: int
+            The batch index
+
+        """
         images, targets = batch
         loss_dict = self.model(images, targets)
         losses = sum(loss for loss in loss_dict.values())
@@ -101,19 +128,41 @@ class FasterRCNNModule(pl.LightningModule):
         return losses
 
     def validation_step(self, batch, batch_idx):
+        """
+        Perform a validation step.
+
+        Parameters
+        ----------
+        batch: Tuple
+            The batch
+        batch_idx: int
+            The batch index
+
+        """
         images, targets = batch
         predictions = self.model(images)
         f_score = self.metrics_computer.run_on_batch(predictions, targets)
         self.val_f_score_steps.append(f_score)
 
     def on_validation_epoch_end(self):
+        """
+        Specify what to do after a validation epoch.
+
+        Computes (and log) the F-score.
+
+        """
         f_score = np.mean(self.val_f_score_steps)
         self.val_f_score_epochs.append(f_score)
         self.log("val_f_score", f_score)
         self.val_f_score_steps.clear()
 
     def on_train_end(self):
-        """ """
+        """
+        Specify what to do after training.
+
+        Prints the validation F-scores for each epoch
+
+        """
         print("=" * 50)
         print("--- Validation F-scores ---")
         for i, f in enumerate(self.val_f_score_epochs):
@@ -121,6 +170,12 @@ class FasterRCNNModule(pl.LightningModule):
         print("=" * 50)
 
     def configure_optimizers(self):
+        """
+        Configure optimizers.
+
+        Stochastic Gradient Descent with a Learning-rate scheduler
+
+        """
         params = [p for p in self.model.parameters() if p.requires_grad]
         optimizer = torch.optim.SGD(
             params, lr=self.learning_rate, momentum=0.9, weight_decay=0.0005
