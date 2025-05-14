@@ -24,7 +24,7 @@ force-exclude = true
 extend-exclude = ["[{][{]cookiecutter.repo_name[}][}]"]
 
 # Set the maximum line length for code.
-line-length = 99
+line-length = 79
 
 # Specify the target Python version for linting.
 target-version = "py312"
@@ -43,8 +43,6 @@ ignore = [
     "D100",  # Missing docstring in public module
     "D101",  # Missing docstring in public class
     "D107",  # Missing docstring in __init__
-    "D202",  # No blank lines allowed after function docstring
-    "D413",  # Missing blank line after last section
 ]
 
 # Allow fix for all enabled rules when `--fix` is provided.
@@ -55,7 +53,7 @@ unfixable = []
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [format]
-# Configure code formatting options.
+# Configure code formatting options (ruff formatter).
 quote-style = "double"
 skip-magic-trailing-comma = true
 line-ending = "auto"
@@ -69,5 +67,5 @@ docstring-code-line-length = 120 # Use "dynamic" to use the line-length value fr
 # "panel-detection/tests/test_foo.py" = ["D103", "F821", "F401"]  # Ignore missing docstrings and undefined name errors
 
 [lint.pydocstyle]
-# Use the Google style guide for docstrings.
-convention = "google"
+# Use the NumPy style guide for docstrings.
+convention = "numpy"
