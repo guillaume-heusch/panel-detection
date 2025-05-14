@@ -14,9 +14,10 @@ from src.engine.fasterrcnn_module import FasterRCNNModule
 
 logger = logging.getLogger("PREDICTOR")
 
+
 class PanelDetector:
     """
-    Class responsible to perform the detection of panels
+    Class responsible to perform the detection of panels.
 
     User has access to:
 
@@ -56,28 +57,37 @@ class PanelDetector:
 
     def run_on_dir(self):
         """
-        Run the panel detection on all images in the 
-        provided folder
+        Run the detection on all images in the provided folder.
 
         Parameters
         ----------
         input_dir: str
             directory containing the images
+
         """
         input_dir = Path(self.cfg.input_dir)
-        image_files = [i for i in input_dir.iterdir() if i.suffix in self.cfg.image_file_extensions]
+        image_files = [
+            i
+            for i in input_dir.iterdir()
+            if i.suffix in self.cfg.image_file_extensions
+        ]
         image_files.sort()
-        image_files = image_files[0::self.cfg.frame_step]
+        image_files = image_files[0 :: self.cfg.frame_step]
         for count, image_file in enumerate(image_files):
-           
             annotation_filename = image_file.stem
             annotation_filename = Path(annotation_filename).with_suffix(".csv")
-            annotation_filename = Path(self.cfg.output_dir) / annotation_filename
+            annotation_filename = (
+                Path(self.cfg.output_dir) / annotation_filename
+            )
             if annotation_filename.is_file():
-                logger.debug(f"annotation for {image_file.stem} exists, skipping !")
+                logger.debug(
+                    f"annotation for {image_file.stem} exists, skipping !"
+                )
                 continue
 
-            logger.debug(f"Processing frame {image_file.stem} ({count}/{len(image_files)})")
+            logger.debug(
+                f"Processing {image_file.stem} ({count}/{len(image_files)})"
+            )
             image = cv2.imread(str(image_file))
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             self.run_on_one_image(image)
@@ -88,10 +98,14 @@ class PanelDetector:
 
             self.write_predictions(annotation_filename)
 
+            # reset self.predictions here ?
+
     def run_on_one_image(self, image: np.ndarray):
         """
         Run the panel detection on the provided image.
+
         Image is supposed to be RGB and in the [0-255] range.
+        This method modifies the predictions
 
         Parameters
         ----------
@@ -119,7 +133,7 @@ class PanelDetector:
 
     def get_predictions(self) -> dict:
         """
-        Returns predictions
+        Return predictions.
 
         Returns
         -------
@@ -163,7 +177,6 @@ class PanelDetector:
                 predictions_to_keep["labels"].append(label)
                 predictions_to_keep["scores"].append(score)
 
-        
         if len(predictions_to_keep["boxes"]) == 0:
             logger.warning("No detections good enough in this image")
             return None
@@ -181,7 +194,7 @@ class PanelDetector:
 
     def _non_max_suppression(self, predictions: dict) -> dict:
         """
-        Performs non-max suppression of overalpping bounding boxes.
+        Perform non-max suppression of overalpping bounding boxes.
 
         Parameters
         ----------
@@ -216,7 +229,7 @@ class PanelDetector:
 
     def show_predictions(self, image: np.ndarray, plot_title="Predictions"):
         """
-        Shows predictions on the image
+        Show predictions on the image.
 
         Note: the image is supposed to RGB in [0-255]
 
@@ -249,7 +262,7 @@ class PanelDetector:
 
     def get_panels(self, image: np.ndarray) -> list:
         """
-        Extract subimages of detected panels
+        Extract subimages of detected panels.
 
         Parameters
         ----------
@@ -273,7 +286,7 @@ class PanelDetector:
 
     def save_panels(self, panels: list):
         """
-        Save the panels as images
+        Save the panels as images.
 
         Parameters
         ----------
@@ -291,7 +304,7 @@ class PanelDetector:
 
     def write_predictions(self, filename: Path):
         """
-        Writes prediction to file
+        Write prediction to file.
 
         Parameters
         ----------
@@ -312,4 +325,3 @@ class PanelDetector:
             for box in boxes:
                 box = [int(b) for b in box]
                 writer.writerow(["1"] + box)
-

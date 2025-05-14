@@ -9,8 +9,9 @@ from matplotlib.patches import Rectangle
 
 def read_annotation_file(filename: Path) -> list:
     """
-    Reads an annotation file containing polygons
-    and returns the list of annotations for polygons
+    Read an annotation file containing polygons.
+
+    Returns the list of annotations for polygons
 
     Parameters
     ----------
@@ -32,7 +33,9 @@ def read_annotation_file(filename: Path) -> list:
 
 def read_annotation_file_for_detection(filename: Path) -> dict:
     """
-    Reads an annotation file containing, in each line,
+    Read an annotation file.
+
+    The annotation file should contain, in each line,
     a class label and the corresponding bounding box
 
     Parameters
@@ -59,8 +62,10 @@ def read_annotation_file_for_detection(filename: Path) -> dict:
 
 
 def convert_polygons_to_bounding_boxes(
-    polygons: list, height: int, width: int
-) -> list:
+        polygons: list,
+        height: int,
+        width: int,
+) -> list:  # fmt: off
     """
     Convert polygons to bounding boxes.
 
@@ -84,7 +89,6 @@ def convert_polygons_to_bounding_boxes(
     """
     boxes = []
     for p in polygons:
-
         xs = [int(p[i]) for i in range(len(p)) if i % 2 == 0]
         ys = [int(p[i]) for i in range(len(p)) if i % 2 == 1]
 
@@ -107,9 +111,9 @@ def save_show_final_result(
     numbers: list,
     save_filename: str = None,
     show: bool = False,
-):
+    ):  # fmt: off
     """
-    Save and / or show the final result
+    Save and / or show the final result.
 
     Displays the original image with bounding boxes
     around panels, and detected numbers above.

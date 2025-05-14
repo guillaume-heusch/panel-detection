@@ -7,7 +7,7 @@ from omegaconf import DictConfig
 
 class DigitRecognizer:
     """
-    Class responsible to perform OCR on detected panels
+    Class responsible to perform OCR on detected panels.
 
     User has access to:
 
@@ -15,11 +15,16 @@ class DigitRecognizer:
 
     Attributes
     ----------
+    cfg: DictConfig
+        the config
+    ocr_engine: OCR
+        the ocr engine
 
     """
 
     def __init__(self, cfg: DictConfig = None):
         """
+        Init function.
 
         Parameters
         ----------
@@ -33,7 +38,7 @@ class DigitRecognizer:
 
     def run_on_all_panels(self, panels: list) -> list:
         """
-        Run the OCR on a list of panels
+        Run the OCR on a list of panels.
 
         Parameters
         ----------
@@ -54,7 +59,7 @@ class DigitRecognizer:
 
     def run_on_one_image(self, panel: np.ndarray) -> Tuple[str, float]:
         """
-        Run OCR on a panel image
+        Run OCR on a panel image.
 
         Parameters
         ----------
