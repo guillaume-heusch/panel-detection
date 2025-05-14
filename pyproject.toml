@@ -7,13 +7,24 @@ authors = [
 ]
 readme = "README.md"
 keywords = ["python"]
-requires-python = ">=3.9,<4.0"
+requires-python = ">=3.9"
 classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "hydra-core",
+    "numpy",
+    "matplotlib",
+    "networkx",
+    "opencv-python",
+    "torch<2.6", # because of OCR Tamil
+    "torchvision",
+    "pytorch-lightning",
+    "ocr-tamil",
 ]
 
 [project.urls]
@@ -24,8 +35,6 @@ Documentation = "https://guillaume-heusch.github.io/panel-detection/"
 # DEV SETTING
 [dependency-groups]
 dev = [
-    "ipykernel>=6.29.5",
-    "jupyterlab>=4.3.1",
     "pyright>=1.1.398",
     "pytest-cov>=6.0.0",
     "pytest>=8.1.1",
