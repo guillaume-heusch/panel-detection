@@ -151,3 +151,9 @@ cython_debug/
 
 # MacOS
 .DS_Store
+
+# Vim
+*.*.swp
+
+# Hydra
+outputs
