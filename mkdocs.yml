@@ -31,7 +31,7 @@ plugins:
       handlers:
         python:
           # search packages in the src folder
-          paths: ["src/panel_detection"]
+          paths: ["src/"]
           options:
             docstring_style: google
             show_source: true
