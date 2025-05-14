@@ -14,11 +14,16 @@ logger = logging.getLogger("PREDICTOR")
 @hydra.main(
     version_base=None,
     config_path="../configs",
-    config_name="run_on_one_image",
-)
+    config_name="run_on_one_image"
+)  # fmt: off
 def run_detection(cfg: DictConfig):
     """
-    Perform the detection of panels, and get its number
+    Perform the detection of panels, and get its number.
+
+    Parameters
+    ----------
+    cfg: DictConfig
+        the config
 
     """
     logger.setLevel(level=logging.DEBUG)
@@ -39,7 +44,9 @@ def run_detection(cfg: DictConfig):
     predictions = panel_detector.get_predictions()
     boxes = predictions["boxes"]
     boxes = boxes.detach().numpy()
-    save_show_final_result(image, boxes, numbers, cfg.save_filename, cfg.show_result)
+    save_show_final_result(
+        image, boxes, numbers, cfg.save_filename, cfg.show_result
+    )
 
 
 if __name__ == "__main__":
