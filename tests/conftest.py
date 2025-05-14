@@ -16,7 +16,8 @@ def create_test_reports_dir() -> None:
     Autouse:
         True: The fixture is automatically used by all tests without explicitly requested.
 
-    Raises:
+    Raises
+    ------
         AssertionError: If the directory is not created successfully.
 
     Side Effects:
@@ -24,4 +25,6 @@ def create_test_reports_dir() -> None:
     """
     test_reports_dir = ".test_reports/coverage/"
     os.makedirs(test_reports_dir, exist_ok=True)
-    assert os.path.exists(test_reports_dir), f"Directory not created: {test_reports_dir}"
+    assert os.path.exists(test_reports_dir), (
+        f"Directory not created: {test_reports_dir}"
+    )
