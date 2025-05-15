@@ -91,19 +91,23 @@ def convert_polygons_to_bounding_boxes(
     TypeError
         If a polygon is not a list of coordinates.
     ValueError
-        If a polygon does not contain exactly 8 numeric values, or contains NaN values.
+        If a polygon does not contain exactly 8 numeric values,
+        or contains NaN values.
     """
     boxes = []
 
     for p in polygons:
-
         # Validate input
         if not isinstance(p, list):
             raise TypeError("Each polygon must be a list of coordinates.")
         if len(p) != 8:
-            raise ValueError(f"Polygon must have exactly 8 values, got {len(p)}.")
+            raise ValueError(
+                f"Polygon must have exactly 8 values, got {len(p)}."
+            )
         if not all(isinstance(coord, (int, float)) for coord in p):
-            raise ValueError("All polygon coordinates must be numbers (int or float).")
+            raise ValueError(
+                "All polygon coordinates must be numbers (int or float)."
+            )
         if any(np.isnan(coord) for coord in p):
             raise ValueError("Polygon contains NaN value(s).")
 
