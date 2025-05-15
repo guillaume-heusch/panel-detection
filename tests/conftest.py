@@ -6,7 +6,6 @@ from pathlib import Path
 from src.utils import read_annotation_file
 
 
-
 @pytest.fixture(scope="session", autouse=True)
 def create_test_reports_dir() -> None:
     """Pytest fixture to create a directory for test reports.
@@ -33,11 +32,18 @@ def create_test_reports_dir() -> None:
         f"Directory not created: {test_reports_dir}"
     )
 
+
 @pytest.fixture
 def annotation_file_polygon():
     return Path("./tests/test_data/annotation_example_polygon.txt")
+
 
 @pytest.fixture
 def polygons():
     annotation_file = Path("./tests/test_data/annotation_example_polygon.txt")
     return read_annotation_file(annotation_file)
+
+
+@pytest.fixture
+def annotation_file_bbox():
+    return Path("./tests/test_data/annotation_example_bbox.csv")
