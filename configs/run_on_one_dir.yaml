@@ -1,0 +1,11 @@
+input_dir: "./data/frames/"
+image_file_extensions:
+  - ".jpg"
+output_dir: "./data/annotations/"
+
+model:
+  ckpt_file: "best.ckpt"
+
+score_threshold: 0.3
+show_all_predictions: False
+show_result: False
