@@ -178,3 +178,33 @@ def save_show_final_result(
     if show:
         plt.show()
     plt.close()
+
+
+def write_annotation_file(
+        filename: str,
+        boxes: list,
+        numbers: list
+    ):  # fmt: off
+    """
+    Write annotation file.
+
+    This function writes an annotation file (csv), with
+    the following:
+    detected_number, xmin, ymin, xmax, ymax
+
+    Parameters
+    ----------
+    filename: str
+        The annotation filename
+    boxes: list
+        List of bounding boxes
+    numbers: list
+        List of numbers
+
+    """
+    with open(filename, "w") as file:
+        writer = csv.writer(file, delimiter=",")
+        for b, n in zip(list(boxes), numbers):
+            b = [int(i) for i in b]
+            row = [n, *b]
+            writer.writerow(row)
