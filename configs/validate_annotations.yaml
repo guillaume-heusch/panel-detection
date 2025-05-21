@@ -1,0 +1,5 @@
+input_images_dir: "./data/frames/"
+input_annotations_dir: "./data/annotations"
+image_file_extensions:
+  - ".jpg"
+output_dir: "./data/annotations-validated"

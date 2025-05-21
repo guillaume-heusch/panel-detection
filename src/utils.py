@@ -1,10 +1,13 @@
 import csv
 import logging
 from pathlib import Path
+from typing import Tuple, List
 
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
+
+logger = logging.getLogger("VALIDATOR")
 
 
 def read_annotation_file(filename: Path) -> list:
@@ -59,6 +62,40 @@ def read_annotation_file_for_detection(filename: Path) -> dict:
             targets["boxes"].append(box)
 
     return targets
+
+
+def read_complete_annotation_file(filename: Path) -> List[Tuple[int, list]]:
+    """
+    Read a complete annotation file.
+
+    A complete annotation CSV file consists of line(s), where each
+    line contains the detected number, followed by the bounding box
+    of the panel, as [xmin, ymin, xmax, ymax]
+
+    Parameters
+    ----------
+    filename: Path
+        The annotation filename
+
+    Returns
+    -------
+    list:
+        The list of annotations, where each element is a tuple
+        with the detected number and the corresponding bounding box
+
+    """
+    result = []
+    with open(filename, "r") as file:
+        csvreader = csv.reader(file)
+        for row in csvreader:
+            try:
+                number = int(row[0])
+            except ValueError:
+                logger.warning("No number detected in panel")
+                number = None
+            box = [int(row[i]) for i in range(1, 5)]
+            result.append((number, box))
+    return result
 
 
 def convert_polygons_to_bounding_boxes(
@@ -125,6 +162,73 @@ def convert_polygons_to_bounding_boxes(
             logging.debug("box not considered: at the border")
 
     return boxes
+
+
+def show_annotations_and_validate(
+    image: np.ndarray, annotations: list
+) -> list:
+    """
+    Show and validate annotations.
+
+    Displays the original image with the corresponding annotations
+    on by one, and prompt the user to validate each annotation
+
+    Parameters
+    ----------
+    image: np.ndarray
+        The image
+    annotations: list
+        The list of annotations, where each element is a tuple
+        with the detected number and the corresponding bounding box
+
+    Returns
+    -------
+    list:
+        The list of validated annotations
+
+    """
+    final_annotations = []
+    for a in annotations:
+        f, ax = plt.subplots(1, figsize=(16, 9))
+        ax.imshow(image)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        b = a[1]  # bounding box
+        rect = Rectangle(
+            (b[0], b[1]),
+            b[2] - b[0],
+            b[3] - b[1],
+            edgecolor="green",
+            facecolor="none",
+            linewidth=2,
+        )
+        ax.add_patch(rect)
+        ax.text(b[0], b[1], a[0], c="limegreen", size="large", weight="bold")
+        plt.show()
+
+        # prompt the user if this annotation should be kept
+        keep = keep_annotation()
+
+        if keep:
+            final_annotations.append(a)
+
+    return final_annotations
+
+
+def keep_annotation():
+    """Ask the user if the last shown detection should be kept."""
+    while True:
+        response = (
+            input("Do you want to keep the current annotation ? [y/n]: ")
+            .strip()
+            .lower()
+        )
+        if response == "y":
+            return True
+        elif response == "n":
+            return False
+        else:
+            print("Invalid input. Please enter 'y' or 'n'")
 
 
 def save_show_final_result(
