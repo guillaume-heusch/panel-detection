@@ -6,7 +6,7 @@ import hydra
 from omegaconf import DictConfig
 
 from src.utils import read_complete_annotation_file
-from src.utils import show_annotations_and_validate
+from src.utils import validate_annotations
 from src.utils import write_annotation_file
 
 logger = logging.getLogger("VALIDATOR")
@@ -77,23 +77,29 @@ def run_validation(cfg: DictConfig):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         # show annotations and validate
-        final_annotations = show_annotations_and_validate(image, annotations)
+        final_annotations = validate_annotations(image, annotations)
 
         # save final annotations
         numbers = []
         boxes = []
-        for a in final_annotations:
-            numbers.append(a[0])
-            boxes.append(a[1])
 
-        validated_annotation_filename = image_file.stem
-        validated_annotation_filename = Path(
-            validated_annotation_filename
-        ).with_suffix(".csv")
-        validated_annotation_filename = (
-            validated_annotations_dir / validated_annotation_filename
-        )
-        write_annotation_file(validated_annotation_filename, boxes, numbers)
+        if len(final_annotations) > 0:
+            for a in final_annotations:
+                numbers.append(a[0])
+                boxes.append(a[1])
+
+            validated_annotation_filename = image_file.stem
+            validated_annotation_filename = Path(
+                validated_annotation_filename
+            ).with_suffix(".csv")
+            validated_annotation_filename = (
+                validated_annotations_dir / validated_annotation_filename
+            )
+            write_annotation_file(
+                validated_annotation_filename, boxes, numbers
+            )
+        else:
+            logger.debug("No annotations for this image !")
 
 
 if __name__ == "__main__":

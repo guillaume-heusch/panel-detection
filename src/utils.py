@@ -72,6 +72,10 @@ def read_complete_annotation_file(filename: Path) -> List[Tuple[int, list]]:
     line contains the detected number, followed by the bounding box
     of the panel, as [xmin, ymin, xmax, ymax]
 
+    Note that if the number inside a given bounding box has not
+    been properly detected (i.e. not convertible to an int),
+    its value is set to None.
+
     Parameters
     ----------
     filename: Path
@@ -87,11 +91,13 @@ def read_complete_annotation_file(filename: Path) -> List[Tuple[int, list]]:
     result = []
     with open(filename, "r") as file:
         csvreader = csv.reader(file)
+        n_annotations = sum(1 for row in csvreader)
+        logger.debug(f"There are {n_annotations} annotations")
+        file.seek(0)  # go back to the beginning of the file.
         for row in csvreader:
             try:
                 number = int(row[0])
             except ValueError:
-                logger.warning("No number detected in panel")
                 number = None
             box = [int(row[i]) for i in range(1, 5)]
             result.append((number, box))
@@ -282,6 +288,42 @@ def save_show_final_result(
     if show:
         plt.show()
     plt.close()
+
+
+def validate_annotations(image: np.ndarray, annotations: list) -> list:
+    """
+    Validate annotations.
+
+    Parameters
+    ----------
+    image: np.ndarray
+        The image
+    annotations: list
+        The list of annotations, where each element is a tuple
+        with the detected number and the corresponding bounding box
+
+    Returns
+    -------
+    list:
+        The list of validated annotations
+
+    """
+    final_annotations = []
+    for a in annotations:
+        print(a)
+        detected_number = a[0]
+        if detected_number is not None:
+            if detected_number > 1000:
+                logger.warning("This looks suspicious ...")
+                annotation = show_annotations_and_validate(image, [a])
+                if len(annotation) == 0:
+                    logger.warning("Annotation removed")
+                    continue
+            final_annotations.append(a)
+        else:
+            logger.warning("No number detected in panel -> removed !")
+    logger.debug(f"There are {len(final_annotations)} remaining annotations")
+    return final_annotations
 
 
 def write_annotation_file(
