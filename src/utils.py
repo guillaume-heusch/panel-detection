@@ -1,7 +1,7 @@
 import csv
 import logging
 from pathlib import Path
-from typing import Tuple, List
+from typing import Tuple, List, Callable
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -170,8 +170,27 @@ def convert_polygons_to_bounding_boxes(
     return boxes
 
 
-def show_annotations_and_validate(
-    image: np.ndarray, annotations: list
+def keep_annotation():
+    """Ask the user if the last shown detection should be kept."""
+    while True:
+        response = (
+            input("Do you want to keep the current annotation ? [y/n]: ")
+            .strip()
+            .lower()
+        )
+        if response == "y":
+            return True
+        elif response == "n":
+            return False
+        else:
+            print("Invalid input. Please enter 'y' or 'n'")
+
+
+def review_annotations(
+    image: np.ndarray,
+    annotations: list,
+    keep_annotation_fn: Callable[[], bool] = keep_annotation,
+    show: bool = False,
 ) -> list:
     """
     Show and validate annotations.
@@ -210,31 +229,14 @@ def show_annotations_and_validate(
         )
         ax.add_patch(rect)
         ax.text(b[0], b[1], a[0], c="limegreen", size="large", weight="bold")
-        plt.show()
+        if show:
+            plt.show()
 
         # prompt the user if this annotation should be kept
-        keep = keep_annotation()
-
-        if keep:
+        if keep_annotation_fn():
             final_annotations.append(a)
 
     return final_annotations
-
-
-def keep_annotation():
-    """Ask the user if the last shown detection should be kept."""
-    while True:
-        response = (
-            input("Do you want to keep the current annotation ? [y/n]: ")
-            .strip()
-            .lower()
-        )
-        if response == "y":
-            return True
-        elif response == "n":
-            return False
-        else:
-            print("Invalid input. Please enter 'y' or 'n'")
 
 
 def save_show_final_result(
@@ -290,7 +292,9 @@ def save_show_final_result(
     plt.close()
 
 
-def validate_annotations(image: np.ndarray, annotations: list) -> list:
+def validate_annotations(
+    image: np.ndarray, annotations: list, show: bool = True
+) -> list:
     """
     Validate annotations.
 
@@ -310,12 +314,11 @@ def validate_annotations(image: np.ndarray, annotations: list) -> list:
     """
     final_annotations = []
     for a in annotations:
-        print(a)
         detected_number = a[0]
         if detected_number is not None:
             if detected_number > 1000:
                 logger.warning("This looks suspicious ...")
-                annotation = show_annotations_and_validate(image, [a])
+                annotation = review_annotations(image, [a], show=show)
                 if len(annotation) == 0:
                     logger.warning("Annotation removed")
                     continue

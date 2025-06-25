@@ -77,7 +77,7 @@ def run_validation(cfg: DictConfig):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         # show annotations and validate
-        final_annotations = validate_annotations(image, annotations)
+        final_annotations = validate_annotations(image, annotations, show=True)
 
         # save final annotations
         numbers = []
