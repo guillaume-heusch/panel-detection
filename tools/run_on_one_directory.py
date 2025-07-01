@@ -48,6 +48,10 @@ def run_detection(cfg: DictConfig):
     except FileExistsError:
         logger.error("Annotations dir already exists")
 
+    # some statistics
+    total_number_of_detected_panels = 0
+    n_images_with_no_detections = 0
+
     # let's go !
     for count, image_file in enumerate(image_files):
         annotation_filename = image_file.stem
@@ -70,10 +74,13 @@ def run_detection(cfg: DictConfig):
 
         if panel_detector.predictions is None:
             logger.warning("No panels found !")
+            n_images_with_no_detections += 1
             continue
 
         # perform OCR on the detected panels
         panels = panel_detector.get_panels(image)
+        total_number_of_detected_panels += 1
+        total_number_of_images_with_no_detections
         numbers = digit_recognizer.run_on_all_panels(panels)
 
         # visualize / save
@@ -82,6 +89,13 @@ def run_detection(cfg: DictConfig):
         boxes = boxes.detach().numpy()
         save_show_final_result(image, boxes, numbers, None, cfg.show_result)
         write_annotation_file(annotation_filename, boxes, numbers)
+
+    logger.debug(
+        f"Total number of detected panels: {total_number_of_detected_panels}"
+    )
+    logger.debug(
+        f"Number of images with no detections: {n_images_with_no_detections}"
+    )
 
 
 if __name__ == "__main__":
