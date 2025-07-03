@@ -54,6 +54,10 @@ def run_validation(cfg: DictConfig):
 
         sys.exit()
 
+    # stats on annotations
+    n_total_annotations = 0
+    n_remaining_annotations = 0
+
     # let's go !
     for count, image_file in enumerate(image_files):
         annotation_filename = image_file.stem
@@ -71,6 +75,7 @@ def run_validation(cfg: DictConfig):
 
         # read annotation file
         annotations = read_complete_annotation_file(annotation_filename)
+        n_total_annotations += len(annotations)
 
         # load image
         image = cv2.imread(str(image_file))
@@ -84,6 +89,7 @@ def run_validation(cfg: DictConfig):
         boxes = []
 
         if len(final_annotations) > 0:
+            n_remaining_annotations += len(final_annotations)
             for a in final_annotations:
                 numbers.append(a[0])
                 boxes.append(a[1])
@@ -100,6 +106,11 @@ def run_validation(cfg: DictConfig):
             )
         else:
             logger.debug("No annotations for this image !")
+
+    logger.debug(
+        f"Total number of detected annotations: {n_total_annotations}"
+    )
+    logger.debug(f"Number of remaining annotations: {n_remaining_annotations}")
 
 
 if __name__ == "__main__":

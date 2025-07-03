@@ -80,7 +80,6 @@ def run_detection(cfg: DictConfig):
         # perform OCR on the detected panels
         panels = panel_detector.get_panels(image)
         total_number_of_detected_panels += 1
-        total_number_of_images_with_no_detections
         numbers = digit_recognizer.run_on_all_panels(panels)
 
         # visualize / save
