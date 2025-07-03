@@ -16,9 +16,7 @@ ffmpeg -i {video_file} {dir_with_frames}/{sequence_name}-frame%04d.png
 
 ## Getting annotations
 
-For each frame, an annotation file has been generated as a csv file. Each csv file contains one or several lines, i.e. one line for each panel correctly detected. By correctly detected, I mean that the bounding box around the panel is more or less ok, and that the correct number has been detected by the OCR engine. 
-
-Here's an example of the content of such a csv file:
+For each frame, an annotation file has been generated as a csv file. Each csv file contains one or several lines, i.e. one line for each detected panel. Here's an example of the content of such a csv file:
 
 ```
 20,974,833,1075,899
@@ -29,12 +27,35 @@ The first number is the detected number on the panel and the four remaining numb
 
 These detections have been automatically made using a [fine-tuned Faster R-CNN](https://docs.pytorch.org/tutorials/intermediate/torchvision_tutorial.html) for the bounding box detection and with the [OCR Tamil package](https://github.com/gnana70/tamil_ocr) for recognizing the numbers inside each panel.
 
-Faulty annotations (where the number is not correctly recognized) have not been corrected, but simply been removed from the annotation file - This would have required way too much effort. Note that this may cause issues for future evaluations, since the ground truth is *de facto* not exact. 
 
-### Some statistics
 
-In some images, no panels can be detected. Consequently no csv file is generated for such images. This can happen for various reasons (an obvious one is that there is actually no panels in the image). Here's an example of a blurry image when no panels are detected:
+### Unusable images
+
+In some images, no panels can be detected. Consequently no csv file is generated for such images. This can happen for various reasons (an obvious one is that there is actually no panels in the image). Here's an example of a blurry image where no panels are detected:
 
 ![](img/blurry_example.jpg)  
 
-**Of the 14932 images in total, there are XXX in which no panels are detected.**
+**Of the 14932 images in total, there are 1579 in which no panels are detected. This leaves us with 13353 usable frames.**
+
+### Final annotations
+
+There are cases where detected numbers are wrong (i.e. the number is not correctly recognized and does not correspond to the one written on the panel). Such cases have been automatically detected in the generated annotation files and simply removed from the annotations.
+
+In particular, lines of the csv file where:
+
+* The "number" contains a character different than a numeric
+* The number is higher than 1000 (this can happen when two panels are close and side-by-side)   
+
+
+have been removed from the annotation file. They have not been corrected, since this would have required way too much effort (visual validation). 
+
+Here's an example of a faulty detection where two panels are side-by-side:
+
+![](img/side_by_side_example.jpg)  
+
+Note that this may cause issues for future evaluations, since the ground truth is *de facto* not exact. For instance, the case shown above has not been corrected into two panels. 
+
+### Final dataset
+
+The final dataset contains 13353 frames. After the (rough) validation of the automatically generated annotations, we have 11235 remaining annotation files. This means that another 2118 frames are discarded. 
+
