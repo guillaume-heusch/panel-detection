@@ -316,7 +316,7 @@ def validate_annotations(
     for a in annotations:
         detected_number = a[0]
         if detected_number is not None:
-            if detected_number > 1000:
+            if detected_number > 1000 or detected_number < 0:
                 logger.warning("This looks suspicious ...")
                 annotation = review_annotations(image, [a], show=show)
                 if len(annotation) == 0:
