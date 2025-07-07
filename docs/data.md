@@ -57,5 +57,13 @@ Note that this may cause issues for future evaluations, since the ground truth i
 
 ### Final dataset
 
-The final dataset contains 13353 frames. After the (rough) validation of the automatically generated annotations, we have 11235 remaining annotation files. This means that another 2118 frames are discarded. 
+The final dataset contains 13353 frames. After the (rough) validation of the automatically generated annotations, we have 11111 remaining annotation files. This means that another 2242 frames are discarded. 
+
+In this final dataset, we hence have 11111 frames and a total of 95374 annotated panels. The distribution of numbers in panels is shown in the picture below. 
+
+![](img/numbers_distribution.png)  
+
+The 3 most represented numbers are 49, 673 and 437 - not that this matters much, but why not ? Regarding panels, the smallest one has an area of (13, 13) = 169, the larger one  (975, 784) = 764400, while the mean area is 9333 pixels squared. 
+
+ 
 
