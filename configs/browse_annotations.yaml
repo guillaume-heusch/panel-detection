@@ -1,0 +1,2 @@
+input_annotations_dir: "./data/annotations-validated-negatives"
+annotation_file_extension: ".csv"
