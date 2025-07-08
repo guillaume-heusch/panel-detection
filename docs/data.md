@@ -1,10 +1,10 @@
 # THE DATA
 
-There are 29 video sequences, but I don't know with which device they have been captured. They all vary in length and overall quality I'd say. They are quite diverse, in the the sense that sometimes it's taken from the back of the venue, sometimes from the stage, and sometimes from the side. That makes a good set of different examples though.
+**There are 29 video sequences**, but I don't know with which devices they have been captured. They all vary in length and overall quality I'd say. They are quite diverse, in the the sense that sometimes it's taken from the back of the venue, sometimes from the stage, and sometimes from the side. That makes a good set of different examples though.
 
 ## Extracting frames
 
-Extracting individual frames from each sequence has been done with the simple ffmpeg command:
+Extracting individual frames from each sequence has been done with this simple ffmpeg command:
 
 ```shell
 ffmpeg -i {video_file} {dir_with_frames}/{sequence_name}-frame%04d.png
@@ -12,7 +12,7 @@ ffmpeg -i {video_file} {dir_with_frames}/{sequence_name}-frame%04d.png
 
 **WARNING:** The `{dir_with_frames}` should exist before running the command.
 
-**There is a grand total of 14932 frames**, with quite some redundancy (which is normal in a video sequence). I deliberately not chose to eliminate some, but I'm quite aware that this dataset is somehow not optimal because of that.
+**There is a grand total of 14932 frames**, with quite some redundancy (which is normal, since it's video sequences). I deliberately chose *not* to eliminate some, but I'm quite aware that this dataset is somehow not optimal because of that.
 
 ## Getting annotations
 
@@ -23,15 +23,14 @@ For each frame, an annotation file has been generated as a csv file. Each csv fi
 861,2987,986,3143,1088
 ```
 
-The first number is the detected number on the panel and the four remaining numbers are the coordinates of the bounding box, as [xmin, ymin, xmax, ymax].
+The first number is the detected number on the panel and the four remaining numbers are the coordinates of the bounding box as [xmin, ymin, xmax, ymax].
 
 These detections have been automatically made using a [fine-tuned Faster R-CNN](https://docs.pytorch.org/tutorials/intermediate/torchvision_tutorial.html) for the bounding box detection and with the [OCR Tamil package](https://github.com/gnana70/tamil_ocr) for recognizing the numbers inside each panel.
 
 
-
 ### Unusable images
 
-In some images, no panels can be detected. Consequently no csv file is generated for such images. This can happen for various reasons (an obvious one is that there is actually no panels in the image). Here's an example of a blurry image where no panels are detected:
+In some images, no panels can be detected. Consequently no csv file is generated for such images. This can happen for various reasons (an obvious one is that there is actually no panels in the image). Here's for instance an example of a blurry image where no panels are detected:
 
 ![](img/blurry_example.jpg)  
 
@@ -44,7 +43,7 @@ There are cases where detected numbers are wrong (i.e. the number is not correct
 In particular, lines of the csv file where:
 
 * The "number" contains a character different than a numeric
-* The number is higher than 1000 (this can happen when two panels are close and side-by-side)   
+* The number is higher than 1000 (this can happen when two panels are close and side-by-side) or lower than zero.
 
 
 have been removed from the annotation file. They have not been corrected, since this would have required way too much effort (visual validation). 
@@ -57,13 +56,19 @@ Note that this may cause issues for future evaluations, since the ground truth i
 
 ### Final dataset
 
-The final dataset contains 13353 frames. After the (rough) validation of the automatically generated annotations, we have 11111 remaining annotation files. This means that another 2242 frames are discarded. 
+As of now, the dataset contains 13353 frames. After the (rough) validation of the automatically generated annotations, we have 11111 remaining annotation files. This means that another 2242 frames are discarded. 
 
-In this final dataset, we hence have 11111 frames and a total of 95374 annotated panels. The distribution of numbers in panels is shown in the picture below. 
+**In this final dataset, we hence have 11111 frames and a total of 95374 annotated panels**. The distribution of numbers in panels is shown in the picture below. 
 
 ![](img/numbers_distribution.png)  
 
-The 3 most represented numbers are 49, 673 and 437 - not that this matters much, but why not ? Regarding panels, the smallest one has an area of (13, 13) = 169, the larger one  (975, 784) = 764400, while the mean area is 9333 pixels squared. 
+The 3 most represented numbers are 49, 673 and 437 - this does not matters much, but why not havin this stat ? 
+
+Regarding panels themselves, here are some statistics:
+
+*  the smallest one has an area of (13, 13) = 169
+*  the larger one is (975, 784) = 764400
+*  the mean area is 9333 pixels squared. 
 
  
 
