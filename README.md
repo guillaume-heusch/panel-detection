@@ -6,7 +6,6 @@
 [![Commit activity](https://img.shields.io/github/commit-activity/m/guillaume-heusch/panel-detection)](https://img.shields.io/github/commit-activity/m/guillaume-heusch/panel-detection)
 [![License](https://img.shields.io/github/license/guillaume-heusch/panel-detection)](https://img.shields.io/github/license/guillaume-heusch/panel-detection)
 
-Code to detect panels with numbers
 
 - **Github repository**: <https://github.com/guillaume-heusch/panel-detection/>
 - **Documentation** <https://guillaume-heusch.github.io/panel-detection/>
